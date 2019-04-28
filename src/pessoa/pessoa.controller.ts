@@ -9,8 +9,8 @@ export class PessoaController {
         private readonly pessoaService : PessoaService
     ){}
 
-    @Post('create')    
-    async create(@Body() createPessoa : IPessoa) : Promise<Pessoa>{                
+    @Post('create')
+    async create(@Body() createPessoa : IPessoa) : Promise<Pessoa> {
         try {
             return await this.pessoaService.create(createPessoa)
         } catch (err) {
@@ -21,5 +21,11 @@ export class PessoaController {
     @Get()
     async findAll() : Promise<Pessoa[]>{
         return this.pessoaService.findAll()
+    }
+
+    @Get(':id')
+    async findOne() : Promise<Pessoa> { 
+        // return this.pessoaService.findAll()
+        return
     }
 }

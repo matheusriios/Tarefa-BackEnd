@@ -2,53 +2,64 @@ import { Controller, Post, Body, Get, Param, Delete, Put } from '@nestjs/common'
 import { TarefaService } from './tarefa.service';
 import { ITarefa } from './interfaces/tarefa.interface';
 import { Tarefa } from 'src/entitys/tarefa.entity';
+import { PessoaService } from 'src/pessoa/pessoa.service';
 
 @Controller('tarefa')
 export class TarefaController {
     constructor(
-        private readonly tarefaService : TarefaService
-    ){}
+        private readonly tarefaService: TarefaService,
+        private readonly pessoaService: PessoaService,
+    ) {}
 
     @Post('create')
-    create(@Body() createTarefa : ITarefa) {                
+    async create(@Body() createTarefa) {
         try {
-            return this.tarefaService.create(createTarefa)
+            await this.tarefaService.deleteAll()
+            const idPessoa = createTarefa.idPessoa;
+            const pessoa = await this.pessoaService.findOne(idPessoa);
+            if (pessoa !== undefined){
+                return this.tarefaService.create(createTarefa, pessoa);
+            }
+
+            return 'Erro ao criar tarefa';
         } catch (err) {
-            console.log(err)
+            console.log(err);
         }
     }
 
     @Get(':id')
-    async findOne(@Param('id') id : number) : Promise<Tarefa> {
+    async findOne(@Param('id') id: number): Promise<Tarefa> {
         const tarefa = await this.tarefaService.findOne(id)
         console.log(tarefa)
-        if(tarefa === undefined){
+        if (tarefa === undefined){
             return JSON.parse(`{
                 "Mensagem": "Tarefa não encontrada"
-            }`)
+            }`);
         }
-        return await tarefa
+        return await tarefa;
     }
 
     @Delete('delete/:id')
-    async delete(@Param('id') id : number) : Promise<Tarefa> {
+    async delete(@Param('id') id: number): Promise<Tarefa> {
         try {
-            const itemDeleted = await this.tarefaService.delete(id)            
-            if(itemDeleted === undefined) {
+            const itemDeleted = await this.tarefaService.delete(id)
+            if (itemDeleted === undefined) {
                 return JSON.parse(`{
                     "Mensagem": "Error ao deletar tarefa"
                 }`)
             }
-            
-            return await itemDeleted
+
+            return await itemDeleted;
         } catch (err) {
             console.log(err)
         }
     }
 
     @Put('update/:id')
-    async update(@Param('id') id : number, @Body() updateTarefa : ITarefa) : Promise<Tarefa> {        
+    async update(@Param('id') id: number, @Body() updateTarefa: ITarefa): Promise<Tarefa> {        
         return await this.tarefaService.update(id, updateTarefa)
     }
+
+
 
 }

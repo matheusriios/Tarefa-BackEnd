@@ -5,19 +5,19 @@ import { Pessoa } from "./pessoa.entity";
 export class Tarefa {
 
     @PrimaryGeneratedColumn()
-    id : number
+    id: number;
 
     @Column('text')
-    nomeTarefa : string
+    nomeTarefa: string;
 
     @Column('date')
-    dataInicio : Date
+    dataInicio: Date;
 
     @Column('date')
-    dataFinal : Date
-    
-    @ManyToOne(() =>  Pessoa, (pessoa: Pessoa) => pessoa.tarefa)
-    public pessoa: Pessoa
+    dataFinal: Date;
 
-    
+    @ManyToOne(() =>  Pessoa, (pessoa: Pessoa) => pessoa.tarefa, {cascade: true})
+    @JoinColumn()
+    public pessoa: Pessoa;
+
 }

@@ -8,15 +8,19 @@ import { IPessoa } from './interfaces/pessoa.interface';
 export class PessoaService {
     constructor(
         @InjectRepository(Pessoa)
-        private readonly pessoa : Repository<Pessoa>
-    ){}
+        private readonly pessoa: Repository<Pessoa>
+    ) {}
 
-    async create(pessoa : IPessoa) : Promise<Pessoa>{                
-        const newPessoa = await this.pessoa.create(pessoa)
-        return await this.pessoa.save(newPessoa)
+    async create(pessoa: IPessoa): Promise<Pessoa>{
+        const newPessoa = await this.pessoa.create(pessoa);
+        return await this.pessoa.save(newPessoa);
     }
 
-    async findAll() : Promise<Pessoa[]>{
+    async findOne(id) : Promise<Pessoa> {
+        return this.pessoa.findOne({where: {id: id}});
+    }
+
+    async findAll(): Promise<Pessoa[]> {
         return await this.pessoa.find({ relations: [ 'tarefa' ] });
     }
-}   
+}
