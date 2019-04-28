@@ -14,7 +14,6 @@ export class TarefaController {
     @Post('create')
     async create(@Body() createTarefa) {
         try {
-            await this.tarefaService.deleteAll()
             const idPessoa = createTarefa.idPessoa;
             const pessoa = await this.pessoaService.findOne(idPessoa);
             if (pessoa !== undefined){
@@ -23,15 +22,19 @@ export class TarefaController {
 
             return 'Erro ao criar tarefa';
         } catch (err) {
-            console.log(err);
+            throw new Error(err);
         }
+    }
+
+    @Get()
+    async findAll(): Promise<Tarefa[]> {
+        return this.tarefaService.findAll();
     }
 
     @Get(':id')
     async findOne(@Param('id') id: number): Promise<Tarefa> {
-        const tarefa = await this.tarefaService.findOne(id)
-        console.log(tarefa)
-        if (tarefa === undefined){
+        const tarefa = await this.tarefaService.findOne(id);
+        if (tarefa === undefined) {
             return JSON.parse(`{
                 "Mensagem": "Tarefa não encontrada"
             }`);
@@ -42,7 +45,7 @@ export class TarefaController {
     @Delete('delete/:id')
     async delete(@Param('id') id: number): Promise<Tarefa> {
         try {
-            const itemDeleted = await this.tarefaService.delete(id)
+            const itemDeleted = await this.tarefaService.delete(id);
             if (itemDeleted === undefined) {
                 return JSON.parse(`{
                     "Mensagem": "Error ao deletar tarefa"
@@ -51,13 +54,13 @@ export class TarefaController {
 
             return await itemDeleted;
         } catch (err) {
-            console.log(err)
+            throw new Error(err);
         }
     }
 
     @Put('update/:id')
-    async update(@Param('id') id: number, @Body() updateTarefa: ITarefa): Promise<Tarefa> {        
-        return await this.tarefaService.update(id, updateTarefa)
+    async update(@Param('id') id: number, @Body() updateTarefa: ITarefa): Promise<Tarefa> {
+        return await this.tarefaService.update(id, updateTarefa);
     }
 
 

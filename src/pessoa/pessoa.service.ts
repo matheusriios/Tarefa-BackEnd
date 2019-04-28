@@ -16,8 +16,8 @@ export class PessoaService {
         return await this.pessoa.save(newPessoa);
     }
 
-    async findOne(id) : Promise<Pessoa> {
-        return this.pessoa.findOne({where: {id: id}});
+    async findOne(id): Promise<Pessoa> {
+        return this.pessoa.findOne( { where: {id:id}, relations: ['tarefa'] } );
     }
 
     async findAll(): Promise<Pessoa[]> {
